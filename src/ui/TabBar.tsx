@@ -122,14 +122,16 @@ export const TabBar: React.FC<TabBarProps> = ({ onSyncLenses }) => {
     }
   }, [onSyncLenses])
 
-  const handlePressStart = (e: React.TouchEvent | React.MouseEvent) => {
-    e.currentTarget.style.transform = 'scale(0.93)'
-    e.currentTarget.style.opacity = '0.75'
+  const handlePressStart = (e: React.SyntheticEvent) => {
+    const target = e.currentTarget as HTMLElement
+    target.style.transform = 'scale(0.93)'
+    target.style.opacity = '0.75'
   }
 
-  const handlePressEnd = (e: React.TouchEvent | React.MouseEvent) => {
-    e.currentTarget.style.transform = 'scale(1)'
-    e.currentTarget.style.opacity = '1'
+  const handlePressEnd = (e: React.SyntheticEvent) => {
+    const target = e.currentTarget as HTMLElement
+    target.style.transform = 'scale(1)'
+    target.style.opacity = '1'
   }
 
   return (
