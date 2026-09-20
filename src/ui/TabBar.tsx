@@ -12,67 +12,79 @@ const barContainerStyle: React.CSSProperties = {
   bottom: 0,
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
-  paddingTop: '8px',
-  paddingBottom: 'max(22px, env(safe-area-inset-bottom, 22px))',
-  paddingLeft: '16px',
-  paddingRight: '16px',
-  gap: '14px',
+  justifyContent: 'space-between',
+  paddingLeft: '20px',
+  paddingRight: '20px',
+  paddingBottom: 'calc(env(safe-area-inset-bottom, 16px) + 8px)',
   pointerEvents: 'none',
   zIndex: 10,
 }
 
-const roundBtnStyle: React.CSSProperties = {
-  width: '56px',
-  height: '56px',
+const sideButtonStyle: React.CSSProperties = {
+  width: '46px',
+  height: '46px',
   borderRadius: '50%',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   pointerEvents: 'auto',
   cursor: 'pointer',
-  background: 'rgba(255, 255, 255, 0.05)',
-  border: '1px solid rgba(255, 255, 255, 0.12)',
-  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.45)',
+  background: 'rgba(255, 255, 255, 0.04)',
+  border: '1px solid rgba(255, 255, 255, 0.14)',
+  boxShadow: '0 8px 30px rgba(0, 0, 0, 0.4)',
+  flexShrink: 0,
+  transition: 'transform 0.15s ease, opacity 0.15s ease',
 }
 
 const centerPillStyle: React.CSSProperties = {
-  height: '56px',
-  paddingLeft: '22px',
-  paddingRight: '26px',
-  borderRadius: '28px',
+  height: '46px',
+  paddingLeft: '20px',
+  paddingRight: '22px',
+  borderRadius: '23px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  gap: '10px',
+  gap: '8px',
   pointerEvents: 'auto',
   cursor: 'pointer',
-  background: 'rgba(255, 255, 255, 0.05)',
-  border: '1px solid rgba(255, 255, 255, 0.12)',
-  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.45)',
+  background: 'rgba(255, 255, 255, 0.04)',
+  border: '1px solid rgba(255, 255, 255, 0.14)',
+  boxShadow: '0 8px 30px rgba(0, 0, 0, 0.4)',
+  transition: 'transform 0.15s ease, opacity 0.15s ease',
 }
 
 const centerTextStyle: React.CSSProperties = {
-  color: '#f3f4f6',
-  fontSize: '15px',
+  color: '#f4f4f6',
+  fontSize: '14px',
   fontWeight: 500,
   letterSpacing: '-0.01em',
+  whiteSpace: 'nowrap',
 }
 
 const iconStyle: React.CSSProperties = {
-  width: '20px',
-  height: '20px',
+  width: '18px',
+  height: '18px',
   objectFit: 'contain',
   filter: 'brightness(0) invert(1)',
-  opacity: 0.9,
+  opacity: 0.88,
+}
+
+const avatarWrapperStyle: React.CSSProperties = {
+  width: '28px',
+  height: '28px',
+  borderRadius: '50%',
+  overflow: 'hidden',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
 }
 
 const mockAvatarStyle: React.CSSProperties = {
-  width: '32px',
-  height: '32px',
+  width: '100%',
+  height: '100%',
   borderRadius: '50%',
-  background: 'linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.2))',
-  animation: 'mockPulse 2.4s ease-in-out infinite',
+  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.15))',
+  animation: 'mockPulse 2.6s ease-in-out infinite',
 }
 
 export const TabBar: React.FC<TabBarProps> = ({ onSyncLenses }) => {
@@ -101,17 +113,48 @@ export const TabBar: React.FC<TabBarProps> = ({ onSyncLenses }) => {
     }
 
     updateBounds()
+    const timer = setTimeout(updateBounds, 50)
     window.addEventListener('resize', updateBounds)
-    return () => window.removeEventListener('resize', updateBounds)
+
+    return () => {
+      clearTimeout(timer)
+      window.removeEventListener('resize', updateBounds)
+    }
   }, [onSyncLenses])
+
+  const handlePressStart = (e: React.TouchEvent | React.MouseEvent) => {
+    e.currentTarget.style.transform = 'scale(0.93)'
+    e.currentTarget.style.opacity = '0.75'
+  }
+
+  const handlePressEnd = (e: React.TouchEvent | React.MouseEvent) => {
+    e.currentTarget.style.transform = 'scale(1)'
+    e.currentTarget.style.opacity = '1'
+  }
 
   return (
     <div style={barContainerStyle}>
-      <div ref={leftRef} style={roundBtnStyle}>
-        <div style={mockAvatarStyle} />
+      <div
+        ref={leftRef}
+        style={sideButtonStyle}
+        onTouchStart={handlePressStart}
+        onTouchEnd={handlePressEnd}
+        onMouseDown={handlePressStart}
+        onMouseUp={handlePressEnd}
+      >
+        <div style={avatarWrapperStyle}>
+          <div style={mockAvatarStyle} />
+        </div>
       </div>
 
-      <div ref={centerRef} style={centerPillStyle}>
+      <div
+        ref={centerRef}
+        style={centerPillStyle}
+        onTouchStart={handlePressStart}
+        onTouchEnd={handlePressEnd}
+        onMouseDown={handlePressStart}
+        onMouseUp={handlePressEnd}
+      >
         <img
           src="/mocs/add.png"
           alt="+"
@@ -123,7 +166,14 @@ export const TabBar: React.FC<TabBarProps> = ({ onSyncLenses }) => {
         <span style={centerTextStyle}>Новый взгляд</span>
       </div>
 
-      <div ref={rightRef} style={roundBtnStyle}>
+      <div
+        ref={rightRef}
+        style={sideButtonStyle}
+        onTouchStart={handlePressStart}
+        onTouchEnd={handlePressEnd}
+        onMouseDown={handlePressStart}
+        onMouseUp={handlePressEnd}
+      >
         <img
           src="/mocs/history.png"
           alt="История"
